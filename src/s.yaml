@@ -11,7 +11,8 @@ vars:
   functionName: "{{ functionName }}"
   environmentVariables:     #  为函数配置环境变量
     App_Version: "0.0.1"
-  image: ${env(imageurl)}
+  # image: ${env(imageurl)}
+  image: '{{ acrRegistry }}'
 
 services:
   # 初始化 nas
@@ -68,3 +69,34 @@ services:
               - DELETE
               - HEAD
               - OPTIONS
+# 预热
+  keep-warm: # 辅助函数, 2 min 定时预热
+    component: fc # 组件名称
+    actions:
+      post-deploy:
+        - component: fc invoke
+    props: # 组件的属性值
+      region: ${vars.region}
+      service: ${vars.service}
+      function:
+        name: keep-warm
+        description: 'Serverless Devs Web Framework Helper Function'
+        codeUri: './code/keep-warm'
+        handler: index.handler
+        runtime: python3
+        timeout: 120
+        memorySize: 128
+        cpu: 0.1
+        diskSize: 512
+        instanceConcurrency: 1
+        environmentVariables:
+          KEEP_WARM_URL: ${project-function.output.url.system_url}
+      triggers:
+        - name: timerTrigger
+          type: timer
+          # qualifier: LATEST    
+          config:
+            payload: '{}'
+            cronExpression: '@every 2m'
+            enable: false
+#END
