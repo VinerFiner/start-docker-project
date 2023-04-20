@@ -7,10 +7,12 @@ vars:
   service:
     name: "{{ serviceName }}"
     description: 'project by Serverless Devs'
+    role: "{{ roleArn }}"
     # nasConfig: auto
   functionName: "{{ functionName }}"
   environmentVariables:     #  为函数配置环境变量
     App_Version: "0.0.1"
+    TZ: "{{ timeZone }}"
   # image: ${env(imageurl)}
   image: '{{ acrRegistry }}'
 

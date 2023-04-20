@@ -28,3 +28,4 @@ s cli registry delete --name-version start-docker-project@0.0.1 --type Applicati
 - 初始化项目
 - 0.0.2 初始化
 - 0.0.4 NAS
+- 0.0.5 RAM 角色 ARN
